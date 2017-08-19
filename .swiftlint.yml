@@ -1,0 +1,10 @@
+opt_in_rules:
+  - empty_count
+  
+disabled_rules:
+  - line_length
+  - trailing_whitespace
+  - type_name
+  - variable_name
+  - for_where
+  - trailing_comma
