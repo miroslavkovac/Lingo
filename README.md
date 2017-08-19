@@ -1,18 +1,30 @@
-# Lingo
+<p align="center">
+    <img src="lingo.png" alt="Lingo logo" />
+</p>
 
+<center>
 ![Swift](http://img.shields.io/badge/swift-3.1-brightgreen.svg)
 ![MIT](http://img.shields.io/badge/license-MIT-brightgreen.svg)
+</center>
 
-Lingo is a pure Swift localization library ready to be used in Server Side Swift project but not limited to those. 
+<p align="center">
+    <a href="#setup">Setup</a>
+  • <a href="#usage">Usage</a>
+  • <a href="#performance">Performance</a>
+  • <a href="#tests">Tests</a>
+  • <a href="#license">License</a>
+</p>
 
-Features:
+**Lingo** is a pure Swift localization library ready to be used in Server Side Swift project but not limited to those. 
+
+**Features**:
 
 * Pluralization - including custom language specific pluralization rules (CLDR compatible)
 * String interpolation
 * Default locale - if the localization for a requested locale is not available, it will fallback to the default one
 * Locale validation - the library will warn you for using invalid locale identifiers (`en_fr` instead of `en_FR` etc.)
 
-# Setup
+## Setup
 
 The supported method for using this library is trough the Swift Package Manager, like this:
 
@@ -54,7 +66,7 @@ try drop.run()
 
 > Further versions of Vapor will hopefully provide some hooks for localization engines to be plugged in, and then we will be able to do something like `drop.localize(...)`.
 
-# Usage
+## Usage
 
 Use the following syntax for defining localizations in the JSON file:
 
@@ -71,7 +83,7 @@ Use the following syntax for defining localizations in the JSON file:
 
 > Note that this syntax is compatible with `i18n-node-2`. This is useful in case you are using a 3rd party localization service which will export the localization files for you.
 
-## Localization
+### Localization
 
 You can retrieve localized string like this:
 
@@ -81,7 +93,7 @@ let localizedTitle = lingo.localized("title", locale: "en")
 print(localizedTitle) // will print: "Hello Swift!"
 ```
 
-## String interpolation
+### String interpolation
 
 You can interpolate the strings like this:
 
@@ -91,7 +103,7 @@ let greeting = lingo.localized("greeting.message", locale: "en", interpolations:
 print(greeting) // will print: "Hi John! How are your Swift skills today?"
 ```
 
-## Pluralization
+### Pluralization
 
 Lingo supports all Unicode plural categories as defined in [CLDR](http://cldr.unicode.org/index/cldr-spec/plural-rules):
 
@@ -115,7 +127,7 @@ print(unread24) // Will print: "You have 24 unread messages."
 Each language contains custom pluralization rules. Lingo currently implements rules for the following languages:
 > ak, am, ar, az, be, bg, bh, bm, bn, bo, br, bs, by, ca, cs, cy, da, de\_AT, de\_CH, de\_DE, de, dz, el, en\_AU, en\_CA, en\_GB, en\_IN, en\_NZ, en, eo, es\_419, es\_AR, es\_CL, es\_CO, es\_CR, es\_EC, es\_ES, es\_MX, es\_NI, es\_PA, es\_PE, es\_US, es\_VE, es, et, eu, fa, ff, fi, fil, fr\_CA, fr\_CH, fr\_FR, fr, ga, gd, gl, guw, gv, he, hi\_IN, hi, hr, hsb, hu, id, ig, ii, it\_CH, it, iu, ja, jv, ka, kab, kde, kea, km, kn, ko, ksh, kw, lag, ln, lo, lt, lv, mg, mk, ml, mn, mo, mr\_IN, ms, mt, my, naq, nb, ne, nl, nn, nso, or, pa, pl, pt, ro, root, ru, sah, se, ses, sg, sh, shi, sk, sl, sma, smi, smj, smn, sms, sr, sv\_SE, sv, sw, th, ti, tl, to, tr, tzm, uk, ur, vi, wa, wo, yo, zh\_CN, zh\_HK, zh\_TW, zh\_YUE, zh
 
-# Performance
+## Performance
 
 In tests with a set of 1000 localization keys including plural forms, the library was able to handle:
 
@@ -124,7 +136,7 @@ In tests with a set of 1000 localization keys including plural forms, the librar
 
 > String interpolation uses regular expressions under the hood, which can explain the difference in performance. All tests were performed on i7 4GHz CPU.
 
-# Note on locale identifiers
+## Note on locale identifiers
 
 Although it is completely up to you how you name the locales, there is an easy way to get the list of all locales directly from `Locale` class:
 
@@ -136,7 +148,7 @@ print(Locale.availableIdentifiers)
 
 Just keep that in mind when adding a support for a new locale.
 
-# Test
+## Tests
 
 To build and run tests from command line just run:
 
@@ -146,7 +158,7 @@ swift test
 
 or simply `cmd+U` from Xcode.
 
-# Limitations
+## Limitations
 
 Currently the library doesn't support the case where different plural categories should be applied to different parts of the *same* localization string. For example, given the definition:
 
@@ -175,13 +187,13 @@ You have 1 apple and 7 orange.
 
 The reason for this was to keep the JSON file syntax simple and elegant (in comparison to iOS .stringsdict file), but if you still need to support this case, the workaround is to split the string in two and combine it later in code.
 
-# Further work
+## Further work
 
 - Locale fallbacks, being RFC4647 compliant.
 - Options for doubling the length of a localized string, which can be useful in debugging.
 - Implement debug mode for easier testing and finding missing localizations.
 - Support for non integer based pluralization rules
 
-# License
+## License
 
 MIT License. See the included LICENSE file.
