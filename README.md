@@ -14,7 +14,7 @@ Features:
 
 # Setup
 
-The supported method for using this library is trough the Swift Package manager, like this:
+The supported method for using this library is trough the Swift Package Manager, like this:
 
 ```
 import PackageDescription
@@ -62,10 +62,10 @@ Use the following syntax for defining localizations in the JSON file:
 {
 	"title": "Hello Swift!",
 	"greeting.message": "Hi %{full-name}! How are your Swift skills today?",
-    "unread.messages": {
-        "one": "You have an unread message.",
-        "other": "You have %{count} unread messages."
-    }
+	"unread.messages": {
+		"one": "You have an unread message.",
+		"other": "You have %{count} unread messages."
+	}
 }
 ```
 
@@ -117,7 +117,7 @@ Each language contains custom pluralization rules. Lingo currently implements ru
 
 # Performance
 
-I have made some test with a set of 1000 localization keys including pluralizations and the library was able to handle:
+In tests with a set of 1000 localization keys including plural forms, the library was able to handle:
 
 * ~ 1M non interpolated localizations per second or 0.001ms per key.
 * ~ 110K interpolated localizations per second or 0.009ms per key.
