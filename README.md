@@ -2,10 +2,10 @@
     <img src="lingo.png" alt="Lingo logo" />
 </p>
 
-<center>
-![Swift](http://img.shields.io/badge/swift-3.1-brightgreen.svg)
-![MIT](http://img.shields.io/badge/license-MIT-brightgreen.svg)
-</center>
+<p align="center">
+	<img src="https://img.shields.io/badge/swift-3.1-brightgreen.svg" alt="swift 3.1"/>
+	<img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License"/>
+</p>
 
 <p align="center">
     <a href="#setup">Setup</a>
