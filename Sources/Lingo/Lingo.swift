@@ -9,15 +9,36 @@ public final class Lingo {
     
     private let model: LocalizationsModel
     
-    /// Initialize Lingo. `rootPath` should contain localization files in JSON format
+    /// Convenience initializer for Lingo. `rootPath` should contain localization files in JSON format
     /// named based on relevant locale. For example: en.json, de.json etc.
     ///
     /// If the `defaultLocale` is specified, it will be used as a fallback when no localizations
-    /// are available for some locale.
-    public init(rootURL: URL, defaultLocale: LocaleIdentifier?) throws {
+    /// are available for given locale.
+    public convenience init(rootPath: String, defaultLocale: LocaleIdentifier?) throws {
+        let dataSource = try FileDataSource(rootPath: rootPath)
+        try self.init(dataSource: dataSource, defaultLocale: defaultLocale)
+    }
+    
+    /// Initializes Lingo. With a DataSource providing localization data
+    ///
+    /// If the `defaultLocale` is specified, it will be used as a fallback when no localizations
+    /// are available for given locale.
+    public init(dataSource: DataSource, defaultLocale: LocaleIdentifier?) throws {
         self.defaultLocale = defaultLocale
-        let parser = Parser(rootURL: rootURL)
-        self.model = try parser.parse()
+        self.model = LocalizationsModel()
+        
+        let validator = LocaleValidator()
+
+        for locale in try dataSource.availableLocales() {
+            // Check if locale is valid. Invalid locales will not cause any problems in the runtime,
+            // so this validation should only warn about potential mistype in locale names.
+            if !validator.validate(locale: locale) {
+                print("WARNING: Invalid locale identifier: \(locale)")
+            }
+
+            let localizations = try dataSource.localizations(for: locale)
+            self.model.addLocalizations(localizations, for: locale)
+        }
     }
     
     /// Returns string localization of a given key in the given locale.

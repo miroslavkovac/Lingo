@@ -11,22 +11,22 @@ class LingoTests: XCTestCase {
     }
     
     func testNonExistingKeyReturnsRawKeyAsLocalization() throws {
-        let lingo = try Lingo(rootURL: URL(fileURLWithPath: self.localizationsRootPath), defaultLocale: nil)
+        let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: nil)
         XCTAssertEqual(lingo.localized("non.existing.key", locale: "en"), "non.existing.key")
     }
     
     func testNonExistingLocaleReturnsRawKeyAsLocalizationWhenDefaultLocaleIsNotSpecified() throws {
-        let lingo = try Lingo(rootURL: URL(fileURLWithPath: self.localizationsRootPath), defaultLocale: nil)
+        let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: nil)
         XCTAssertEqual(lingo.localized("hello.world", locale: "non-existing-locale"), "hello.world")
     }
     
     func testFallbackToDefaultLocale() throws {
-        let lingo = try Lingo(rootURL: URL(fileURLWithPath: self.localizationsRootPath), defaultLocale: "en")
+        let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: "en")
         XCTAssertEqual(lingo.localized("hello.world", locale: "non-existing-locale"), "Hello World!")
     }
     
     func testLocalization() throws {
-        let lingo = try Lingo(rootURL: URL(fileURLWithPath: self.localizationsRootPath), defaultLocale: nil)
+        let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: nil)
         
         XCTAssertEqual(lingo.localized("hello.world", locale: "en"), "Hello World!")
         XCTAssertEqual(lingo.localized("hello.world", locale: "de"), "Hallo Welt!")

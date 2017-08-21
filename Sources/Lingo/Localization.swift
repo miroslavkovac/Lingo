@@ -1,6 +1,6 @@
 import Foundation
 
-enum Localization {
+public enum Localization {
     
     case universal(value: String)
     case pluralized(values: [PluralCategory: String])
