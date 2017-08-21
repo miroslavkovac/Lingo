@@ -8,7 +8,8 @@
 </p>
 
 <p align="center">
-    <a href="#setup">Setup</a>
+    <a href="#features">Features</a>
+  • <a href="#setup">Setup</a>
   • <a href="#usage">Usage</a>
   • <a href="#performance">Performance</a>
   • <a href="#tests">Tests</a>
@@ -17,63 +18,63 @@
 
 **Lingo** is a pure Swift localization library ready to be used in Server Side Swift project but not limited to those. 
 
-**Features**:
+## Features
 
-* Pluralization - including custom language specific pluralization rules (CLDR compatible)
-* String interpolation
-* Default locale - if the localization for a requested locale is not available, it will fallback to the default one
-* Locale validation - the library will warn you for using invalid locale identifiers (`en_fr` instead of `en_FR` etc.)
+* **Pluralization** - including custom language specific pluralization rules (CLDR compatible)
+* **String interpolation**
+* **Flexible data source** (read localizations from a JSON file, database or whatever suites your workflow the best)
+* **Default locale** - if the localization for a requested locale is not available, it will fallback to the default one
+* **Locale validation** - the library will warn you for using invalid locale identifiers (`en_fr` instead of `en_FR` etc.)
 
 ## Setup
 
 The supported method for using this library is trough the Swift Package Manager, like this:
 
-```
+```swift
 import PackageDescription
 
 let package = Package(
     name: "MyCoolApp",
-    dependencies: [.Package(url: "https://github.com/miroslavkovac/Lingo.git", majorVersion: 1)]
+    dependencies: [.Package(url: "https://github.com/miroslavkovac/Lingo.git", majorVersion: 2)]
 )
 ```
 
 Optionally, if you are using Xcode, you can generate Xcode project by running:
 
-```
+```swift
 swift package generate-xcodeproj
 ```
 
 In your app create an instance of `Lingo` object passing the root directory path where the localization files are located:
 
+```swift
+let lingo = Lingo(rootPath: "/path/to/localizations", defaultLocale: "en")
 ```
-let lingo = try Lingo(rootURL: URL(fileURLWithPath: "/users/user.name/localizations"), defaultLocale: "en")
-```
-> Note that the call can throw in case of an IO error or invalid JSON file.
 
 ### Vapor
 
 If you are using Vapor for you server side swift project, you can initialise `Lingo` alongside `Droplet` which will make it accessible everywhere in code:
 
-```
+```swift
 import Vapor
 import Lingo
 
 let drop = try Droplet()
-let lingo = try Lingo(rootURL: URL(fileURLWithPath: drop.config.workDir.appending("Localizations")), defaultLocale: "en")
+let lingo = Lingo(rootPath: drop.config.workDir.appending("Localizations"), defaultLocale: "en")
 
 try drop.run()
 ```
 
-> Further versions of Vapor will hopefully provide some hooks for localization engines to be plugged in, and then we will be able to do something like `drop.localize(...)`.
+> Future versions of Vapor might provide some hooks for localization engines to be plugged in, and then we might be able to do something like `drop.localize(...)`.
 
 ## Usage
 
-Use the following syntax for defining localizations in the JSON file:
+Use the following syntax for defining localizations in a JSON file:
 
-```
+```swift
 {
 	"title": "Hello Swift!",
-	"greeting.message": "Hi %{full-name}! How are your Swift skills today?",
+	"greeting.message": "Hi %{full-name}!",
 	"unread.messages": {
 		"one": "You have an unread message.",
 		"other": "You have %{count} unread messages."
@@ -81,26 +82,26 @@ Use the following syntax for defining localizations in the JSON file:
 }
 ```
 
-> Note that this syntax is compatible with `i18n-node-2`. This is useful in case you are using a 3rd party localization service which will export the localization files for you.
+> Note that this syntax is compatible with `i18n-node-2`. This is can be useful in case you are using a 3rd party localization service which will export the localization files for you.
 
 ### Localization
 
 You can retrieve localized string like this:
 
-```
-let localizedTitle = lingo.localized("title", locale: "en")
+```swift
+let localizedTitle = lingo.localize("title", locale: "en")
 
 print(localizedTitle) // will print: "Hello Swift!"
 ```
 
 ### String interpolation
 
-You can interpolate the strings like this:
+You can interpolate the localized strings like this:
 
-```
-let greeting = lingo.localized("greeting.message", locale: "en", interpolations: ["full-name": "John"])
+```swift
+let greeting = lingo.localize("greeting.message", locale: "en", interpolations: ["full-name": "John"])
 
-print(greeting) // will print: "Hi John! How are your Swift skills today?"
+print(greeting) // will print: "Hi John!"
 ```
 
 ### Pluralization
@@ -116,9 +117,9 @@ Lingo supports all Unicode plural categories as defined in [CLDR](http://cldr.un
 
 Example:
 
-```
-let unread1 = lingo.localized("unread.messages", locale: "en", interpolations: ["count": 1])
-let unread24 = lingo.localized("unread.messages", locale: "en", interpolations: ["count": 24]) 
+```swift
+let unread1 = lingo.localize("unread.messages", locale: "en", interpolations: ["count": 1])
+let unread24 = lingo.localize("unread.messages", locale: "en", interpolations: ["count": 24]) 
 
 print(unread1) // Will print: "You have an unread message."
 print(unread24) // Will print: "You have 24 unread messages."
@@ -136,11 +137,35 @@ In tests with a set of 1000 localization keys including plural forms, the librar
 
 > String interpolation uses regular expressions under the hood, which can explain the difference in performance. All tests were performed on i7 4GHz CPU.
 
+## Custom localizations data source
+
+Although most of the time, the localizations will be defined in the JSON file, but if you prefer keeping them in a database, we've got you covered!
+
+To implement a custom data source, all you need is to have an object that conforms to the `LocalizationDataSource` protocol:
+
+```swift
+public protocol LocalizationDataSource {   
+
+    func availableLocales() -> [LocaleIdentifier]
+    func localizations(`for` locale: LocaleIdentifier) -> [LocalizationKey: Localization]
+    
+}
+```
+
+So, let's say you are using MongoDB to store your localizations, all you need to do is to create a data source and pass it to Lingo's designated initializer:
+
+```swift
+let mongoDataSource = MongoLocalizationDataSource(...)
+let lingo = Lingo(dataSource: mongoDataSource, defaultLocale: "en")
+```
+
+Lingo already includes `FileDataSource` conforming to this protocol, which, as you might guess, is wired up to the Longo's convenience initializer with `rootPath`.
+
 ## Note on locale identifiers
 
 Although it is completely up to you how you name the locales, there is an easy way to get the list of all locales directly from `Locale` class:
 
-```
+```swift
 #import Foundation
 
 print(Locale.availableIdentifiers)
@@ -152,7 +177,7 @@ Just keep that in mind when adding a support for a new locale.
 
 To build and run tests from command line just run:
 
-```
+```swift
 swift test
 ```
 
@@ -173,8 +198,8 @@ Currently the library doesn't support the case where different plural categories
 
 and passing numbers 1 and 7:
 
-```
-print(lingo.localized("key", locale: "en", interpolations: ["apples-count": 1, "oranges-count": 7]))
+```swift
+print(lingo.localize("key", locale: "en", interpolations: ["apples-count": 1, "oranges-count": 7]))
 
 ```
 
@@ -185,12 +210,12 @@ You have 1 apple and 7 orange.
 ```
 > Note the missing *s* in the printed message.
 
-The reason for this was to keep the JSON file syntax simple and elegant (in comparison to iOS .stringsdict file), but if you still need to support this case, the workaround is to split the string in two and combine it later in code.
+This was done on purpose, and the reason for this was to keep the JSON file syntax simple and elegant (in contrast with iOS .stringsdict file and similar). If you still need to support a case like this, a possible workaround would be to split that string in two and combine it later in code.
 
 ## Further work
 
 - Locale fallbacks, being RFC4647 compliant.
-- Options for doubling the length of a localized string, which can be useful in debugging.
+- Options for doubling the length of a localized string, which can be useful for debugging.
 - Implement debug mode for easier testing and finding missing localizations.
 - Support for non integer based pluralization rules
 

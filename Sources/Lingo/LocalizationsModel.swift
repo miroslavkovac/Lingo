@@ -23,8 +23,8 @@ class LocalizationsModel {
     func addLocalizations(_ localizations: [LocalizationKey: Localization], `for` locale: LocaleIdentifier) {
         // Find existing bucket for a given locale or create a new one
         if var existingLocaleBucket = self.data[locale] {
-            for (localiationKey, localization) in localizations {
-                existingLocaleBucket[localiationKey] = localization
+            for (localizationKey, localization) in localizations {
+                existingLocaleBucket[localizationKey] = localization
                 self.data[locale] = existingLocaleBucket
             }
         } else {
@@ -34,7 +34,7 @@ class LocalizationsModel {
     
     /// Returns localized string of a given key in the given locale.
     /// If string contains interpolations, they are replaced from the dictionary.
-    func localized(key: LocalizationKey, locale: LocaleIdentifier, interpolations: [String: Any]? = nil) -> LocalizationResult {
+    func localize(_ key: LocalizationKey, locale: LocaleIdentifier, interpolations: [String: Any]? = nil) -> LocalizationResult {
         guard let localeBucket = self.data[locale] else {
             return .missingLocale
         }

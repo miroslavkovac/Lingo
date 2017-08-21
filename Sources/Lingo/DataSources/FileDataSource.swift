@@ -1,29 +1,37 @@
 import Foundation
 
 /// Class providing file backed data source for Lingo in case localizations are stored in JSON files.
-public final class FileDataSource: DataSource {
+public final class FileDataSource: LocalizationDataSource {
     
     public let rootPath: String
     
     /// `rootPath` should contain localization files in JSON format named based on relevant locale. For example: en.json, de.json etc.
-    public init(rootPath: String) throws {
+    public init(rootPath: String) {
         self.rootPath = rootPath
     }
     
-    // MARK: DataSource
-    public func availableLocales() throws -> [LocaleIdentifier] {
-        return try FileManager().contentsOfDirectory(atPath: self.rootPath).filter {
-            $0.hasSuffix(".json")
-        }.map {
-            $0.components(separatedBy: ".").first! // It is safe to use force unwrap here as $0 will always contain the "."
+    // MARK: LocalizationDataSource
+    public func availableLocales() -> [LocaleIdentifier] {
+        do {
+            let identifiers = try FileManager().contentsOfDirectory(atPath: self.rootPath).filter {
+                $0.hasSuffix(".json")
+            }.map {
+                $0.components(separatedBy: ".").first! // It is safe to use force unwrap here as $0 will always contain the "."
+            }
+            
+            return identifiers
+
+        } catch let e {
+            assertionFailure("Failed retrieving contents of a directory: \(e.localizedDescription)")
+            return []
         }
     }
     
-    public func localizations(for locale: LocaleIdentifier) throws -> [LocalizationKey : Localization] {
+    public func localizations(for locale: LocaleIdentifier) -> [LocalizationKey : Localization] {
         let jsonFilePath = "\(self.rootPath)/\(locale).json"
         
         // Try to read localizations file from disk
-        guard let localizationsData = try self.loadLocalizations(atPath: jsonFilePath) else {
+        guard let localizationsData = self.loadLocalizations(atPath: jsonFilePath) else {
             assertionFailure("Failed to load localizations at path: \(jsonFilePath)")
             return [:]
         }
@@ -76,14 +84,17 @@ fileprivate extension FileDataSource {
     }
     
     /// Loads a localizations file from disk if it exists and parses it.
-    /// It can throw an exception in case JSON file is invalid.
-    func loadLocalizations(atPath path: String) throws -> [String: Any]? {
-        if !FileManager().fileExists(atPath: path) {
-            return nil
+    func loadLocalizations(atPath path: String) -> [String: Any]? {
+        precondition(FileManager().fileExists(atPath: path))
+
+        guard
+            let fileContent = try? Data(contentsOf: URL(fileURLWithPath: path)),
+            let jsonObject = try? JSONSerialization.jsonObject(with: fileContent, options: []) as? [String: Any] else {
+                assertionFailure("Failed reading localizations from file at path: \(path)")
+                return nil
         }
         
-        let fileContent = try Data(contentsOf: URL(fileURLWithPath: path))
-        return try JSONSerialization.jsonObject(with: fileContent, options: []) as? [String: Any]
+        return jsonObject
     }
     
 }

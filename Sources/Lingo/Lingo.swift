@@ -14,37 +14,37 @@ public final class Lingo {
     ///
     /// If the `defaultLocale` is specified, it will be used as a fallback when no localizations
     /// are available for given locale.
-    public convenience init(rootPath: String, defaultLocale: LocaleIdentifier?) throws {
-        let dataSource = try FileDataSource(rootPath: rootPath)
-        try self.init(dataSource: dataSource, defaultLocale: defaultLocale)
+    public convenience init(rootPath: String, defaultLocale: LocaleIdentifier?) {
+        let dataSource = FileDataSource(rootPath: rootPath)
+        self.init(dataSource: dataSource, defaultLocale: defaultLocale)
     }
     
-    /// Initializes Lingo. With a DataSource providing localization data
+    /// Initializes Lingo with a `LocalizationDataSource`.
     ///
     /// If the `defaultLocale` is specified, it will be used as a fallback when no localizations
     /// are available for given locale.
-    public init(dataSource: DataSource, defaultLocale: LocaleIdentifier?) throws {
+    public init(dataSource: LocalizationDataSource, defaultLocale: LocaleIdentifier?) {
         self.defaultLocale = defaultLocale
         self.model = LocalizationsModel()
         
         let validator = LocaleValidator()
 
-        for locale in try dataSource.availableLocales() {
+        for locale in dataSource.availableLocales() {
             // Check if locale is valid. Invalid locales will not cause any problems in the runtime,
             // so this validation should only warn about potential mistype in locale names.
             if !validator.validate(locale: locale) {
                 print("WARNING: Invalid locale identifier: \(locale)")
             }
 
-            let localizations = try dataSource.localizations(for: locale)
+            let localizations = dataSource.localizations(for: locale)
             self.model.addLocalizations(localizations, for: locale)
         }
     }
     
-    /// Returns string localization of a given key in the given locale.
-    /// If string contains interpolations, they are replaced from the dictionary.
-    public func localized(_ key: LocalizationKey, locale: LocaleIdentifier, interpolations: [String: Any]? = nil) -> String {
-        let result = self.model.localized(key: key, locale: locale, interpolations: interpolations)
+    /// Returns localized string for given key in specified locale.
+    /// If string contains interpolations, they are replaced from the `interpolations` dictionary.
+    public func localize(_ key: LocalizationKey, locale: LocaleIdentifier, interpolations: [String: Any]? = nil) -> String {
+        let result = self.model.localize(key, locale: locale, interpolations: interpolations)
         switch result {
             case .missingKey:
                 print("Missing localization for locale: \(locale)")
@@ -52,7 +52,7 @@ public final class Lingo {
             
             case .missingLocale:
                 if let defaultLocale = self.defaultLocale {
-                    return self.localized(key, locale: defaultLocale, interpolations: interpolations)
+                    return self.localize(key, locale: defaultLocale, interpolations: interpolations)
                 } else {
                     print("Missing \(locale) localization for key: \(key)")
                     return key
