@@ -3,6 +3,10 @@ import Foundation
 /// Class providing file backed data source for Lingo in case localizations are stored in JSON files.
 public final class FileDataSource: LocalizationDataSource {
     
+    enum Error: Swift.Error {
+        case parsingFailure(message: String)
+    }
+    
     public let rootPath: String
     
     /// `rootPath` should contain localization files in JSON format named based on relevant locale. For example: en.json, de.json etc.
@@ -11,48 +15,34 @@ public final class FileDataSource: LocalizationDataSource {
     }
     
     // MARK: LocalizationDataSource
-    public func availableLocales() -> [LocaleIdentifier] {
-        do {
-            let identifiers = try FileManager().contentsOfDirectory(atPath: self.rootPath).filter {
-                $0.hasSuffix(".json")
-            }.map {
-                $0.components(separatedBy: ".").first! // It is safe to use force unwrap here as $0 will always contain the "."
-            }
-            
-            return identifiers
-
-        } catch let e {
-            assertionFailure("Failed retrieving contents of a directory: \(e.localizedDescription)")
-            return []
+    public func availableLocales() throws -> [LocaleIdentifier] {
+        return try FileManager().contentsOfDirectory(atPath: self.rootPath).filter {
+            $0.hasSuffix(".json")
+        }.map {
+            $0.components(separatedBy: ".").first! // It is safe to use force unwrap here as $0 will always contain the "."
         }
     }
     
-    public func localizations(for locale: LocaleIdentifier) -> [LocalizationKey : Localization] {
+    public func localizations(for locale: LocaleIdentifier) throws -> [LocalizationKey : Localization] {
         let jsonFilePath = "\(self.rootPath)/\(locale).json"
-        
-        // Try to read localizations file from disk
-        guard let localizationsData = self.loadLocalizations(atPath: jsonFilePath) else {
-            assertionFailure("Failed to load localizations at path: \(jsonFilePath)")
-            return [:]
-        }
         
         var localizations = [LocalizationKey: Localization]()
         
-        // Parse localizations. Note that localizationObject can be:
-        // - a string, in case there are no different pluralizations defined (one, few, many, other,..)
-        // - an object, in case pluralization is used
-        for (localizationKey, object) in localizationsData {
+        // Parse localizations. Note that valid `object` in the for-loop can be either:
+        // - a String, in case there are no pluralizations defined (one, few, many, other,..)
+        // - a dictionary [String: String], in case pluralizations are defined
+        for (localizationKey, object) in try self.loadLocalizations(atPath: jsonFilePath) {
             if let stringValue = object as? String {
                 let localization = Localization.universal(value: stringValue)
                 localizations[localizationKey] = localization
                 
             } else if let rawPluralizedValues = object as? [String: String] {
-                let pluralizedValues = self.pluralizedValues(fromRaw: rawPluralizedValues)
+                let pluralizedValues = try self.pluralizedValues(fromRaw: rawPluralizedValues)
                 let localization = Localization.pluralized(values: pluralizedValues)
                 localizations[localizationKey] = localization
                 
             } else {
-                assertionFailure("Unsupported localization format for key: \(localizationKey). Localization key will be skipped.")
+                throw Error.parsingFailure(message: "Unsupported pluralization format for key: \(localizationKey).")
             }
         }
         
@@ -69,32 +59,30 @@ fileprivate extension FileDataSource {
     ///   "one": "You have an unread message."
     ///   "many": "You have %{count} unread messages."
     /// }
-    func pluralizedValues(fromRaw rawPluralizedValues: [String: String]) -> [PluralCategory: String] {
-        var pluralizedValues = [PluralCategory: String]()
+    func pluralizedValues(fromRaw rawPluralizedValues: [String: String]) throws -> [PluralCategory: String] {
+        var result = [PluralCategory: String]()
         
         for (rawPluralCategory, value) in rawPluralizedValues {
             guard let pluralCategory = PluralCategory(rawValue: rawPluralCategory) else {
-                assertionFailure("Unsupported plural category: \(rawPluralCategory)")
-                continue
+                throw Error.parsingFailure(message: "Unsupported plural category: \(rawPluralCategory)")
             }
-            pluralizedValues[pluralCategory] = value
+            result[pluralCategory] = value
         }
         
-        return pluralizedValues
+        return result
     }
     
     /// Loads a localizations file from disk if it exists and parses it.
-    func loadLocalizations(atPath path: String) -> [String: Any]? {
-        precondition(FileManager().fileExists(atPath: path))
-
-        guard
-            let fileContent = try? Data(contentsOf: URL(fileURLWithPath: path)),
-            let jsonObject = try? JSONSerialization.jsonObject(with: fileContent, options: []) as? [String: Any] else {
-                assertionFailure("Failed reading localizations from file at path: \(path)")
-                return nil
+    func loadLocalizations(atPath path: String) throws -> [String: Any] {
+        
+        let fileContent = try Data(contentsOf: URL(fileURLWithPath: path))
+        let jsonObject = try JSONSerialization.jsonObject(with: fileContent, options: [])
+            
+        guard let localizations = jsonObject as? [String: Any] else {
+            throw Error.parsingFailure(message: "Invalid localization file format at path: \(path). Expected string indexed dictionary at the root level.")
         }
         
-        return jsonObject
+        return localizations
     }
     
 }

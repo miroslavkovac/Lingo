@@ -5,8 +5,11 @@ import Foundation
 /// Use it in case your localizations are not stored in JSON files, but rather in a database or other storage technology.
 public protocol LocalizationDataSource {
     
-    func availableLocales() -> [LocaleIdentifier]
+    /// Return a list of available locales.
+    /// Lingo will query for localizations for each of these locales in localizations(for:) method.
+    func availableLocales() throws -> [LocaleIdentifier]
     
-    func localizations(`for` locale: LocaleIdentifier) -> [LocalizationKey: Localization]
+    /// Return localizations for a given locale.
+    func localizations(`for` locale: LocaleIdentifier) throws -> [LocalizationKey: Localization]
     
 }
