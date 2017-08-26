@@ -37,7 +37,7 @@ If you are using Vapor, we encourage you to use [LingoProvider](https://github.c
 let localizedTitle = droplet.lingo.localize("welcome.title", locale: "en")
 ```
 
-> LingoProvider is a separate package and and can be downloaded from [GitHub](https://github.com/vapor-comunity/lingo-provider). If you are LingoProvider you don't need the Lingo package dependency.
+> LingoProvider is a separate package and and can be downloaded from [GitHub](https://github.com/vapor-comunity/lingo-provider). If you use LingoProvider you don't need the Lingo package dependency.
 
 ### Without Vapor
 
