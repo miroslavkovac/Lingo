@@ -12,7 +12,6 @@
   • <a href="#setup">Setup</a>
   • <a href="#usage">Usage</a>
   • <a href="#performance">Performance</a>
-  • <a href="#tests">Tests</a>
   • <a href="#license">License</a>
 </p>
 
@@ -28,15 +27,27 @@
 
 ## Setup
 
-The supported method for using this library is trough the Swift Package Manager, like this:
+There are two ways of integrating Lingo depending on whether you use Vapor or not:
+
+### With Vapor
+
+If you are using Vapor, we encourage you to use [LingoProvider](https://github.com/vapor-comunity/lingo-provider) which will provide seamless and native integration with Vapor. This way `Lingo` becomes part of `Droplet` and you will be able to get localizations even easier:
 
 ```swift
-import PackageDescription
+let localizedTitle = droplet.lingo.localize("welcome.title", locale: "en")
+```
 
-let package = Package(
-    name: "MyCoolApp",
-    dependencies: [.Package(url: "https://github.com/miroslavkovac/Lingo.git", majorVersion: 2)]
-)
+> LingoProvider is a separate package and and can be downloaded from [GitHub](https://github.com/vapor-comunity/lingo-provider). If you are LingoProvider you don't need the Lingo package dependency.
+
+### Without Vapor
+
+Add the dependency:
+
+```swift
+dependencies: [
+	...,
+	.Package(url: "https://github.com/miroslavkovac/Lingo.git", majorVersion: 2)
+]
 ```
 
 Optionally, if you are using Xcode, you can generate Xcode project by running:
@@ -45,27 +56,21 @@ Optionally, if you are using Xcode, you can generate Xcode project by running:
 swift package generate-xcodeproj
 ```
 
-In your app create an instance of `Lingo` object passing the root directory path where the localization files are located:
-
-```swift
-let lingo = Lingo(rootPath: "/path/to/localizations", defaultLocale: "en")
-```
-
-### Vapor
-
-If you are using Vapor for you server side swift project, you can initialise `Lingo` alongside `Droplet` which will make it accessible everywhere in code:
+Create an instance of `Lingo` object passing the root directory path where the localization files are located:
 
 ```swift
 import Vapor
 import Lingo
 
-let drop = try Droplet()
-let lingo = Lingo(rootPath: drop.config.workDir.appending("Localizations"), defaultLocale: "en")
+let config = try Config()
 
+// Create Lingo
+let lingo = Lingo(rootPath: config.workDir.appending("Localizations"), defaultLocale: "en")
+
+let droplet = try Droplet(config)
 try drop.run()
-```
 
-> Future versions of Vapor might provide some hooks for localization engines to be plugged in, and then we might be able to do something like `drop.localize(...)`.
+```
 
 ## Usage
 
@@ -172,16 +177,6 @@ print(Locale.availableIdentifiers)
 ```
 
 Just keep that in mind when adding a support for a new locale.
-
-## Tests
-
-To build and run tests from command line just run:
-
-```swift
-swift test
-```
-
-or simply `cmd+U` from Xcode.
 
 ## Limitations
 
