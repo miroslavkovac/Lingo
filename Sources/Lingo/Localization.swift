@@ -1,9 +1,9 @@
 import Foundation
 
-/// Object represent localization of a given key in a given language.
+/// Object represents localization of a given key in a given language.
 ///
 /// It has 2 cases:
-/// - `universal` - in case pluralization is not needed and one values is used for all plural categories
+/// - `universal` - in case pluralization is not needed and one value is used for all plural categories
 /// - `pluralized` - in case of different localizations are defined based on a PluralCategory
 public enum Localization {
     
@@ -18,7 +18,7 @@ public enum Localization {
             case .pluralized(let values):
                 let pluralCategory = self.pluralCategory(for: locale, interpolations: interpolations)
                 guard let rawString = values[pluralCategory] else {
-                    assertionFailure("Missing plural value for category: \(pluralCategory)")
+                    print("Missing plural value for category: \(pluralCategory). Will default to an empty string.")
                     return ""
                 }
                 
@@ -44,16 +44,19 @@ fileprivate extension Localization {
     /// The PluralCategory is based on the first numeric value in `interpolations` and `PluralizationRule` for the given language.
     /// If no numeric value is found, it fallbacks to `.other`.
     func pluralCategory(`for` locale: LocaleIdentifier, interpolations: [String: Any]?) -> PluralCategory {
-        guard let pluralizationRule = PluralizationRuleStore.pluralizationRule(forLocale: locale) else {
-            assertionFailure("Missing pluralization rule for locale: \(locale). Will default to `other` rule.")
+        // If there are no interpolations, or there is not a single numeric value in them,
+        // there is no way to determine which plural category to use, so default to .other
+        guard let interpolations = interpolations, let numericValue = self.extractNumericValue(from: interpolations) else {
             return .other
         }
         
-        if let interpolations = interpolations, let numericValue = self.extractNumericValue(from: interpolations) {
-            return pluralizationRule.pluralCategory(forNumericValue: numericValue)
+        // If no pluralization rule is defined for current language, default to .other.
+        guard let pluralizationRule = PluralizationRuleStore.pluralizationRule(forLocale: locale) else {
+            print("Missing pluralization rule for locale: \(locale). Will default to `other` rule.")
+            return .other
         }
         
-        return .other
+        return pluralizationRule.pluralCategory(forNumericValue: numericValue)
     }
     
     /// Extract the first numeric value from the interpolations and make it non negative.
@@ -62,7 +65,7 @@ fileprivate extension Localization {
     func extractNumericValue(from interpolations: [String: Any]) -> UInt? {
         for value in interpolations.values {
             if var intValue = value as? Int {
-                // Make sure the value is positive
+                // Make sure the value is always positive
                 if intValue < 0 {
                     intValue *= -1
                 }

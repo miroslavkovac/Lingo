@@ -11,22 +11,17 @@ class LingoTests: XCTestCase {
     }
     
     func testNonExistingKeyReturnsRawKeyAsLocalization() throws {
-        let lingo = Lingo(rootPath: self.localizationsRootPath, defaultLocale: nil)
+        let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: "en")
         XCTAssertEqual(lingo.localize("non.existing.key", locale: "en"), "non.existing.key")
     }
     
-    func testNonExistingLocaleReturnsRawKeyAsLocalizationWhenDefaultLocaleIsNotSpecified() throws {
-        let lingo = Lingo(rootPath: self.localizationsRootPath, defaultLocale: nil)
-        XCTAssertEqual(lingo.localize("hello.world", locale: "non-existing-locale"), "hello.world")
-    }
-    
     func testFallbackToDefaultLocale() throws {
-        let lingo = Lingo(rootPath: self.localizationsRootPath, defaultLocale: "en")
+        let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: "en")
         XCTAssertEqual(lingo.localize("hello.world", locale: "non-existing-locale"), "Hello World!")
     }
     
     func testLocalization() throws {
-        let lingo = Lingo(rootPath: self.localizationsRootPath, defaultLocale: nil)
+        let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: "en")
         
         XCTAssertEqual(lingo.localize("hello.world", locale: "en"), "Hello World!")
         XCTAssertEqual(lingo.localize("hello.world", locale: "de"), "Hallo Welt!")

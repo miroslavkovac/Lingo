@@ -9,17 +9,7 @@ class LocalizationsModel {
     }
     
     private var data = [LocaleIdentifier: [LocalizationKey: Localization]]()
-    
-    /// Adds localization for a given key and locale. If localization for a given key already exists, it will be overwritten
-    func addLocalization(_ localization: Localization, forKey key: LocalizationKey, locale: LocaleIdentifier) {
-        // Find existing bucket for a given locale or create a new one
-        var localeBucket = self.data[locale] ?? [LocalizationKey: Localization]()
         
-        // Update the data
-        localeBucket[key] = localization
-        self.data[locale] = localeBucket
-    }
-    
     func addLocalizations(_ localizations: [LocalizationKey: Localization], `for` locale: LocaleIdentifier) {
         // Find existing bucket for a given locale or create a new one
         if var existingLocaleBucket = self.data[locale] {
