@@ -46,30 +46,14 @@ Add the dependency:
 ```swift
 dependencies: [
 	...,
-	.Package(url: "https://github.com/miroslavkovac/Lingo.git", majorVersion: 2)
+	.Package(url: "https://github.com/miroslavkovac/Lingo.git", majorVersion: 3)
 ]
-```
-
-Optionally, if you are using Xcode, you can generate Xcode project by running:
-
-```swift
-swift package generate-xcodeproj
 ```
 
 Create an instance of `Lingo` object passing the root directory path where the localization files are located:
 
 ```swift
-import Vapor
-import Lingo
-
-let config = try Config()
-
-// Create Lingo
-let lingo = Lingo(rootPath: config.workDir.appending("Localizations"), defaultLocale: "en")
-
-let droplet = try Droplet(config)
-try drop.run()
-
+let lingo = try Lingo(rootPath: "path/to/localizations", defaultLocale: "en")
 ```
 
 ## Usage
@@ -130,8 +114,10 @@ print(unread1) // Will print: "You have an unread message."
 print(unread24) // Will print: "You have 24 unread messages."
 ```
 
-Each language contains custom pluralization rules. Lingo currently implements rules for the following languages:
+Each language contains custom pluralization rules that define which plural category should be used for which numeric value. Lingo currently implements rules for the following languages:
 > ak, am, ar, az, be, bg, bh, bm, bn, bo, br, bs, by, ca, cs, cy, da, de\_AT, de\_CH, de\_DE, de, dz, el, en\_AU, en\_CA, en\_GB, en\_IN, en\_NZ, en, eo, es\_419, es\_AR, es\_CL, es\_CO, es\_CR, es\_EC, es\_ES, es\_MX, es\_NI, es\_PA, es\_PE, es\_US, es\_VE, es, et, eu, fa, ff, fi, fil, fr\_CA, fr\_CH, fr\_FR, fr, ga, gd, gl, guw, gv, he, hi\_IN, hi, hr, hsb, hu, id, ig, ii, it\_CH, it, iu, ja, jv, ka, kab, kde, kea, km, kn, ko, ksh, kw, lag, ln, lo, lt, lv, mg, mk, ml, mn, mo, mr\_IN, ms, mt, my, naq, nb, ne, nl, nn, nso, or, pa, pl, pt, ro, root, ru, sah, se, ses, sg, sh, shi, sk, sl, sma, smi, smj, smn, sms, sr, sv\_SE, sv, sw, th, ti, tl, to, tr, tzm, uk, ur, vi, wa, wo, yo, zh\_CN, zh\_HK, zh\_TW, zh\_YUE, zh
+
+The origial seed of pluralization rules was translated from [Rails i18n](https://github.com/svenfuchs/rails-i18n/tree/master/rails/pluralization) into Swift.
 
 ## Performance
 
@@ -151,8 +137,8 @@ To implement a custom data source, all you need is to have an object that confor
 ```swift
 public protocol LocalizationDataSource {   
 
-    func availableLocales() -> [LocaleIdentifier]
-    func localizations(`for` locale: LocaleIdentifier) -> [LocalizationKey: Localization]
+    func availableLocales() throws -> [LocaleIdentifier]
+    func localizations(forLocale: LocaleIdentifier) throws -> [LocalizationKey: Localization]
     
 }
 ```
@@ -161,7 +147,7 @@ So, let's say you are using MongoDB to store your localizations, all you need to
 
 ```swift
 let mongoDataSource = MongoLocalizationDataSource(...)
-let lingo = Lingo(dataSource: mongoDataSource, defaultLocale: "en")
+let lingo = try Lingo(dataSource: mongoDataSource, defaultLocale: "en")
 ```
 
 Lingo already includes `FileDataSource` conforming to this protocol, which, as you might guess, is wired up to the Longo's convenience initializer with `rootPath`.

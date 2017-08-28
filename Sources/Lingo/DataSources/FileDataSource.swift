@@ -23,7 +23,7 @@ public final class FileDataSource: LocalizationDataSource {
         }
     }
     
-    public func localizations(for locale: LocaleIdentifier) throws -> [LocalizationKey : Localization] {
+    public func localizations(forLocale locale: LocaleIdentifier) throws -> [LocalizationKey : Localization] {
         let jsonFilePath = "\(self.rootPath)/\(locale).json"
         
         var localizations = [LocalizationKey: Localization]()

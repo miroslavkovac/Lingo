@@ -34,7 +34,7 @@ public final class Lingo {
                 print("WARNING: Invalid locale identifier: \(locale)")
             }
 
-            let localizations = try dataSource.localizations(for: locale)
+            let localizations = try dataSource.localizations(forLocale: locale)
             self.model.addLocalizations(localizations, for: locale)
         }
     }

@@ -10,6 +10,6 @@ public protocol LocalizationDataSource {
     func availableLocales() throws -> [LocaleIdentifier]
     
     /// Return localizations for a given locale.
-    func localizations(`for` locale: LocaleIdentifier) throws -> [LocalizationKey: Localization]
+    func localizations(forLocale locale: LocaleIdentifier) throws -> [LocalizationKey: Localization]
     
 }
