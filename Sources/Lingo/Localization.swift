@@ -3,7 +3,7 @@ import Foundation
 /// Object represents localization of a given key in a given language.
 ///
 /// It has 2 cases:
-/// - `universal` - in case pluralization is not needed and one values is used for all plural categories
+/// - `universal` - in case pluralization is not needed and one value is used for all plural categories
 /// - `pluralized` - in case of different localizations are defined based on a PluralCategory
 public enum Localization {
     
