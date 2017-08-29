@@ -157,7 +157,7 @@ Lingo already includes `FileDataSource` conforming to this protocol, which, as y
 Although it is completely up to you how you name the locales, there is an easy way to get the list of all locales directly from `Locale` class:
 
 ```swift
-#import Foundation
+import Foundation
 
 print(Locale.availableIdentifiers)
 ```
