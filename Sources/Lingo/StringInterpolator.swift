@@ -12,7 +12,7 @@ class StringInterpolator {
         let matches = StringInterpolator.regularExpression.matches(in: rawString, options: [], range: NSRange.init(location: 0, length: rawString.characters.count))
         
         for match in matches {
-            let range: NSRange = match.rangeAt(0)
+            let range: NSRange = match.range
             
             // Extract whole capture group string. Will contain string like: "%{count}"
             let startIndex = rawString.index(rawString.startIndex, offsetBy: range.location)
