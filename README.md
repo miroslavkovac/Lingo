@@ -31,13 +31,13 @@ There are two ways of integrating Lingo depending on whether you use Vapor or no
 
 ### With Vapor
 
-If you are using Vapor, we encourage you to use [LingoProvider](https://github.com/vapor-comunity/lingo-provider) which will provide seamless and native integration with Vapor. This way `Lingo` becomes part of `Droplet` and you will be able to get localizations even easier:
+If you are using Vapor, we encourage you to use [LingoProvider](https://github.com/vapor-community/Lingo-Provider) which will provide seamless and native integration with Vapor. This way `Lingo` becomes part of `Droplet` and you will be able to get localizations even easier:
 
 ```swift
 let localizedTitle = droplet.lingo.localize("welcome.title", locale: "en")
 ```
 
-> LingoProvider is a separate package and and can be downloaded from [GitHub](https://github.com/vapor-comunity/lingo-provider). If you use LingoProvider you don't need the Lingo package dependency.
+> LingoProvider is a separate package and and can be downloaded from [GitHub](https://github.com/vapor-community/Lingo-Provider). If you use LingoProvider you don't need the Lingo package dependency.
 
 ### Without Vapor
 
