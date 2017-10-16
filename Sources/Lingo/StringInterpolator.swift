@@ -18,7 +18,7 @@ class StringInterpolator {
             let startIndex = rawString.index(rawString.startIndex, offsetBy: range.location)
             let endIndex = rawString.index(startIndex, offsetBy: range.length)
             #if swift(>=4)
-                let matchedString = rawString[startIndex..<endIndex]
+                let matchedString = String(rawString[startIndex..<endIndex])
             #else
                 let matchedString = rawString.substring(with: Range(uncheckedBounds: (lower: startIndex, upper: endIndex)))
             #endif
