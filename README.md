@@ -3,7 +3,8 @@
 </p>
 
 <p align="center">
-	<img src="https://img.shields.io/badge/swift-3.1-brightgreen.svg" alt="swift 3.1"/>
+	<img src="https://img.shields.io/badge/swift-3.2-brightgreen.svg" alt="swift 3.1"/>
+	<img src="https://img.shields.io/badge/swift-4-brightgreen.svg" alt="swift 4"/>
 	<img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License"/>
 </p>
 

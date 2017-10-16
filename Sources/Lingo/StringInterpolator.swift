@@ -17,12 +17,20 @@ class StringInterpolator {
             // Extract whole capture group string. Will contain string like: "%{count}"
             let startIndex = rawString.index(rawString.startIndex, offsetBy: range.location)
             let endIndex = rawString.index(startIndex, offsetBy: range.length)
-            let matchedString = rawString.substring(with: Range(uncheckedBounds: (lower: startIndex, upper: endIndex)))
+            #if swift(>=4)
+                let matchedString = rawString[startIndex..<endIndex]
+            #else
+                let matchedString = rawString.substring(with: Range(uncheckedBounds: (lower: startIndex, upper: endIndex)))
+            #endif
             
             // Extract the key from `matchedString`. Will contain string like: "count"
             let keyStartIndex = matchedString.index(matchedString.startIndex, offsetBy: 2)
             let keyEndIndex = matchedString.index(before: matchedString.endIndex)
-            let key = matchedString.substring(with: Range(uncheckedBounds: (lower: keyStartIndex, upper: keyEndIndex)))
+            #if swift(>=4)
+                let key = String(matchedString[keyStartIndex..<keyEndIndex])
+            #else
+                let key = matchedString.substring(with: Range(uncheckedBounds: (lower: keyStartIndex, upper: keyEndIndex)))
+            #endif
             
             if let interpolation = interpolations[key] {
                 result = result.replacingOccurrences(of: matchedString, with: "\(interpolation)")
