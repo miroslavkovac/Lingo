@@ -6,6 +6,7 @@ public typealias LocaleIdentifier = String
 public final class Lingo {
     
     public let defaultLocale: LocaleIdentifier
+    public let dataSource: LocalizationDataSource
     
     private let model: LocalizationsModel
     
@@ -22,6 +23,7 @@ public final class Lingo {
     /// Initializes Lingo with a `LocalizationDataSource`.
     /// - `defaultLocale` will be used as a fallback when no localizations are available for a requested locale.
     public init(dataSource: LocalizationDataSource, defaultLocale: LocaleIdentifier) throws {
+        self.dataSource = dataSource
         self.defaultLocale = defaultLocale
         self.model = LocalizationsModel()
         
