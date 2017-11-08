@@ -109,6 +109,7 @@ extension PluralizationRuleStore {
         pa(),
         pl(),
         pt(),
+        pt_BR(),
         ro(),
         root(),
         ru(),
