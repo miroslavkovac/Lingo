@@ -8,9 +8,11 @@ class StringInterpolator {
     /// The function finds all placeholders and replaces them with a value specified in interpolations dictionary
     func interpolate(_ rawString: String, with interpolations: [String: Any]) -> String {
         var result = rawString
-        
-        let matches = StringInterpolator.regularExpression.matches(in: rawString, options: [], range: NSRange.init(location: 0, length: rawString.count))
-        
+        #if swift(>=4)
+            let matches = StringInterpolator.regularExpression.matches(in: rawString, options: [], range: NSRange.init(location: 0, length: rawString.count))
+        #else
+            let matches = StringInterpolator.regularExpression.matches(in: rawString, options: [], range: NSRange.init(location: 0, length: rawString.characters.count)) 
+        #endif
         for match in matches {
             let range: NSRange = match.range
             
