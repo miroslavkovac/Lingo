@@ -50,8 +50,12 @@ public final class Lingo {
                 return localizedString
 
             case .missingKey:
-                print("No localizations found for key: \(key), locale: \(locale). Will fallback to raw value of the key.")
-                return key
+                let defaultLocaleResult = self.model.localize(key, locale: self.defaultLocale, interpolations: interpolations)
+                guard case LocalizationsModel.LocalizationResult.success(let localizationInDefaultLocale) = defaultLocaleResult else {
+                    print("No localizations found for key: \(key), locale: \(locale) or in default locale. Will fallback to raw value of the key.")
+                    return key
+                }
+                return localizationInDefaultLocale
             
             case .missingLocale:
                 // Fallback to default locale
