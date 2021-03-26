@@ -28,7 +28,7 @@ public enum Localization {
     
 }
 
-fileprivate extension Localization {
+private extension Localization {
     
     static let interpolator = StringInterpolator()
 

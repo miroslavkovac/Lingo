@@ -54,14 +54,23 @@ public final class Lingo {
                 return key
             
             case .missingLocale:
-                // Fallback to default locale
-                let defaultLocaleResult = self.model.localize(key, locale: self.defaultLocale, interpolations: interpolations)
-                guard case LocalizationsModel.LocalizationResult.success(let localizationInDefaultLocale) = defaultLocaleResult else {
-                    print("Missing localization for key: \(key), locale: \(locale). Will fallback to raw value of the key.")
-                    return key
+                /// If exact locale is not found (exact meaning that both language and country match),
+                /// and the locale has a country code, fall back to matching only by a language code.
+                if locale.hasCountryCode {
+                    let languageCodeResult = self.model.localize(key, locale: locale.languageCode, interpolations: interpolations)
+                    if case LocalizationsModel.LocalizationResult.success(let localizationResult) = languageCodeResult {
+                        return localizationResult
+                    }
                 }
-                
-                return localizationInDefaultLocale
+
+                /// Fall back to default locale
+                let defaultLocaleResult = self.model.localize(key, locale: self.defaultLocale, interpolations: interpolations)
+                if case LocalizationsModel.LocalizationResult.success(let localizationResult) = defaultLocaleResult {
+                    return localizationResult
+                }
+
+                print("Missing localization for key: \(key), locale: \(locale). Will fallback to raw value of the key.")
+                return key
         }
     }
  
@@ -70,4 +79,20 @@ public final class Lingo {
         return PluralizationRuleStore.availablePluralCategories(forLocale: locale)
     }
     
+}
+
+extension LocaleIdentifier {
+
+    /// Returns `true` if the locale identifier contains both, language and country code
+    var hasCountryCode: Bool {
+        return self.components(separatedBy: "_").count == 2
+    }
+
+    /// Returns language code from the locale identifier string.
+    /// For locales which contains a country code (en_US, de_CH), the country code is removed.
+    var languageCode: String {
+        let components = self.components(separatedBy: "_")
+        return components.count == 2 ? components.first! : self
+    }
+
 }

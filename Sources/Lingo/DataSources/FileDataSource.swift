@@ -51,7 +51,7 @@ public final class FileDataSource: LocalizationDataSource {
     
 }
 
-fileprivate extension FileDataSource {
+private extension FileDataSource {
     
     /// Parses a dictionary which has string plural categories as keys ([String: String]) and returns a typed dictionary ([PluralCategory: String])
     /// An example dictionary looks like:
