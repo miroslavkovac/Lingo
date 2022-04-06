@@ -1,6 +1,6 @@
 import Foundation
 
-class ro: Romanian, PluralizationRule {
+final class ro: Romanian, PluralizationRule {
 
     let locale: LocaleIdentifier = "ro"
 

@@ -1,6 +1,6 @@
 import Foundation
 
-class hsb: PluralizationRule {
+final class hsb: PluralizationRule {
 
     let locale: LocaleIdentifier = "hsb"
 

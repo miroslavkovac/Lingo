@@ -1,6 +1,6 @@
 import Foundation
 
-class tzm: PluralizationRule {
+final class tzm: PluralizationRule {
 
     let locale: LocaleIdentifier = "tzm"
     

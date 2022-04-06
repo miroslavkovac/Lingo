@@ -1,6 +1,6 @@
 import Foundation
 
-class or: OneWithZeroOther, PluralizationRule {
+final class or: OneWithZeroOther, PluralizationRule {
 
     let locale: LocaleIdentifier = "or"
 

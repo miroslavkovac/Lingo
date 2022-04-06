@@ -1,6 +1,6 @@
 import Foundation
 
-class lv: PluralizationRule {
+final class lv: PluralizationRule {
 
     let locale: LocaleIdentifier = "lv"
     

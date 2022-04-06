@@ -8,7 +8,7 @@ class DefaultFixtures {
         try FileManager().createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
         
         try self.enLocalizations.write(toFile: path + "/en.json", atomically: true, encoding: .utf8)
-        try self.enLocalizations.write(toFile: path + "/en_XX.json", atomically: true, encoding: .utf8)
+        try self.enLocalizations.write(toFile: path + "/en-XX.json", atomically: true, encoding: .utf8)
         try self.deLocalizations.write(toFile: path + "/de.json", atomically: true, encoding: .utf8)
     }
     

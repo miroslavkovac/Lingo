@@ -1,6 +1,6 @@
 import Foundation
 
-class kw: OneTwoOther, PluralizationRule {
+final class kw: OneTwoOther, PluralizationRule {
 
     let locale: LocaleIdentifier = "kw"
 

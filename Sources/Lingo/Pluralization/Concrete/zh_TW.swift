@@ -1,7 +1,7 @@
 import Foundation
 
-class zh_TW: Other, PluralizationRule {
+final class zh_TW: Other, PluralizationRule {
 
-    let locale: LocaleIdentifier = "zh_TW"
+    let locale: LocaleIdentifier = "zh-TW"
 
 }

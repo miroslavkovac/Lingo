@@ -1,7 +1,7 @@
 import Foundation
 
-class en_AU: OneOther, PluralizationRule {
+final class en_AU: OneOther, PluralizationRule {
 
-    let locale: LocaleIdentifier = "en_AU"
+    let locale: LocaleIdentifier = "en-AU"
 
 }

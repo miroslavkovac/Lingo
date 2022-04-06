@@ -1,6 +1,6 @@
 import Foundation
 
-class cy: PluralizationRule {
+final class cy: PluralizationRule {
 
     let locale: LocaleIdentifier = "cy"
 

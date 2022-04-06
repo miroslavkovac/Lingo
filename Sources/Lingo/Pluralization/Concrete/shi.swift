@@ -1,6 +1,6 @@
 import Foundation
 
-class shi: OneWithZeroOther, PluralizationRule {
+final class shi: OneWithZeroOther, PluralizationRule {
 
     let locale: LocaleIdentifier = "shi"
 

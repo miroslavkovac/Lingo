@@ -1,7 +1,7 @@
 import XCTest
 @testable import Lingo
 
-class enTests: XCTestCase {
+final class enTests: XCTestCase {
     
     func testPluralCategory() {
         let rule = en()

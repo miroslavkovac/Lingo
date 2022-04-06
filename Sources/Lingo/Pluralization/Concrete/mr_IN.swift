@@ -1,7 +1,7 @@
 import Foundation
 
-class mr_IN: OneWithZeroOther, PluralizationRule {
+final class mr_IN: OneWithZeroOther, PluralizationRule {
 
-    let locale: LocaleIdentifier = "mr_IN"
+    let locale: LocaleIdentifier = "mr-IN"
 
 }

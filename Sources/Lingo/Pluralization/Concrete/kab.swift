@@ -1,6 +1,6 @@
 import Foundation
 
-class kab: OneUptoTwoOther, PluralizationRule {
+final class kab: OneUptoTwoOther, PluralizationRule {
 
     let locale: LocaleIdentifier = "kab"
 

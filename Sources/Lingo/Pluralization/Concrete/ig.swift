@@ -1,6 +1,6 @@
 import Foundation
 
-class ig: Other, PluralizationRule {
+final class ig: Other, PluralizationRule {
 
     let locale: LocaleIdentifier = "ig"
 

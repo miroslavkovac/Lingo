@@ -1,6 +1,6 @@
 import Foundation
 
-class el: OneOther, PluralizationRule {
+final class el: OneOther, PluralizationRule {
 
     let locale: LocaleIdentifier = "el"
 

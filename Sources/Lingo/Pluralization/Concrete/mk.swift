@@ -1,6 +1,6 @@
 import Foundation
 
-class mk: PluralizationRule {
+final class mk: PluralizationRule {
     
     let locale: LocaleIdentifier = "mk"
     

@@ -1,6 +1,6 @@
 import Foundation
 
-class ksh: PluralizationRule {
+final class ksh: PluralizationRule {
 
     let locale: LocaleIdentifier = "ksh"
 

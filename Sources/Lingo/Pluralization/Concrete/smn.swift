@@ -1,6 +1,6 @@
 import Foundation
 
-class smn: OneTwoOther, PluralizationRule {
+final class smn: OneTwoOther, PluralizationRule {
 
     let locale: LocaleIdentifier = "smn"
 

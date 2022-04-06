@@ -1,6 +1,6 @@
 import Foundation
 
-class lag: PluralizationRule {
+final class lag: PluralizationRule {
 
     let locale: LocaleIdentifier = "lag"
     

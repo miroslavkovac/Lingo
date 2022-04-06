@@ -1,6 +1,6 @@
 import Foundation
 
-class bs: EastSlavic, PluralizationRule {
+final class bs: EastSlavic, PluralizationRule {
 
     let locale: LocaleIdentifier = "bs"
 

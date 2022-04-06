@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-	<img src="https://img.shields.io/badge/swift-5-brightgreen.svg" alt="swift 4"/>
+	<img src="https://img.shields.io/badge/swift-5-brightgreen.svg" alt="swift 5"/>
 	<img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License"/>
 </p>
 
@@ -23,7 +23,7 @@
 * **String interpolation**
 * **Flexible data source** (read localizations from a JSON file, database or whatever suites your workflow the best)
 * **Default locale** - if the localization for a requested locale is not available, it will fallback to the default one
-* **Locale validation** - the library will warn you for using invalid locale identifiers (`en_fr` instead of `en_FR` etc.)
+* **Locale validation** - the library will warn you for using invalid locale identifiers (`en-fr` instead of `en-FR` etc.)
 
 ## Setup
 
@@ -46,7 +46,7 @@ Add the dependency:
 ```swift
 dependencies: [
 	...,
-	.Package(url: "https://github.com/miroslavkovac/Lingo.git", majorVersion: 3)
+	.Package(url: "https://github.com/miroslavkovac/Lingo.git", majorVersion: 4)
 ]
 ```
 
@@ -55,6 +55,12 @@ Create an instance of `Lingo` object passing the root directory path where the l
 ```swift
 let lingo = try Lingo(rootPath: "path/to/localizations", defaultLocale: "en")
 ```
+
+## Upgrading from version 3 to version 4
+
+In the version 4 the format of locale identifiers was changed to match [RFC 5646](https://datatracker.ietf.org/doc/html/rfc5646). The version 3 used `_` to separate _language code_ and _country code_, and now the version 4 uses `-`. 
+
+If you were using any locales which include a country code, you would need to rename related translation files to match the new format.    
 
 ## Usage
 
@@ -115,9 +121,9 @@ print(unread24) // Will print: "You have 24 unread messages."
 ```
 
 Each language contains custom pluralization rules that define which plural category should be used for which numeric value. Lingo currently implements rules for the following languages:
-> ak, am, ar, az, be, bg, bh, bm, bn, bo, br, bs, by, ca, cs, cy, da, de\_AT, de\_CH, de\_DE, de, dz, el, en\_AU, en\_CA, en\_GB, en\_IN, en\_NZ, en, eo, es\_419, es\_AR, es\_CL, es\_CO, es\_CR, es\_EC, es\_ES, es\_MX, es\_NI, es\_PA, es\_PE, es\_US, es\_VE, es, et, eu, fa, ff, fi, fil, fr\_CA, fr\_CH, fr\_FR, fr, ga, gd, gl, guw, gv, he, hi\_IN, hi, hr, hsb, hu, id, ig, ii, it\_CH, it, iu, ja, jv, ka, kab, kde, kea, km, kn, ko, ksh, kw, lag, ln, lo, lt, lv, mg, mk, ml, mn, mo, mr\_IN, ms, mt, my, naq, nb, ne, nl, nn, nso, or, pa, pl, pt, pt_BR, ro, root, ru, sah, se, ses, sg, sh, shi, sk, sl, sma, smi, smj, smn, sms, sr, sv\_SE, sv, sw, th, ti, tl, to, tr, tzm, uk, ur, vi, wa, wo, yo, zh\_CN, zh\_HK, zh\_TW, zh\_YUE, zh
+> ak, am, ar, az, be, bg, bm, bn, bo, br, bs, ca, cs, cy, da, de\-AT, de\-CH, de\-DE, de, dz, el, en\-AU, en\-CA, en\-GB, en\-IN, en\-NZ, en, eo, es\-419, es\-AR, es\-CL, es\-CO, es\-CR, es\-EC, es\-ES, es\-MX, es\-NI, es\-PA, es\-PE, es\-US, es\-VE, es, et, eu, fa, ff, fi, fil, fr\-CA, fr\-CH, fr\-FR, fr, ga, gd, gl, gv, he, hi\-IN, hi, hr, hsb, hu, id, ig, ii, it\-CH, it, iu, ja, jv, ka, kab, kde, kea, km, kn, ko, ksh, kw, lag, ln, lo, lt, lv, mg, mk, ml, mn, mr\-IN, ms, mt, my, naq, nb, ne, nl, nn, nso, or, pa, pl, pt, pt-BR, ro, ru, sah, se, ses, sg, shi, sk, sl, smn, sr, sv\-SE, sv, sw, th, ti, to, tr, tzm, uk, ur, vi, wa, wo, yo, zh\-CN, zh\-HK, zh\-TW, zh
 
-The origial seed of pluralization rules was translated from [Rails i18n](https://github.com/svenfuchs/rails-i18n/tree/master/rails/pluralization) into Swift.
+The original seed of pluralization rules was translated from [Rails i18n](https://github.com/svenfuchs/rails-i18n/tree/master/rails/pluralization) into Swift.
 
 ## Performance
 

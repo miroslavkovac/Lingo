@@ -1,6 +1,6 @@
 import Foundation
 
-class ar: PluralizationRule {
+final class ar: PluralizationRule {
     
     let locale: LocaleIdentifier = "ar"
     

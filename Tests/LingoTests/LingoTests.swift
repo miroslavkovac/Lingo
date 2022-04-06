@@ -1,7 +1,7 @@
 import XCTest
 @testable import Lingo
 
-class LingoTests: XCTestCase {
+final class LingoTests: XCTestCase {
     
     let localizationsRootPath = NSTemporaryDirectory().appending("LingoTests")
     
@@ -22,7 +22,7 @@ class LingoTests: XCTestCase {
 
     func testFallbackToLanguageCodeWhenExactLocaleDoesntExist() throws {
         let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: "en")
-        XCTAssertEqual(lingo.localize("unread.messages", locale: "de_CH", interpolations: ["unread-messages-count": 24]), "Du hast 24 ungelesene Nachrichten.")
+        XCTAssertEqual(lingo.localize("unread.messages", locale: "de-CH", interpolations: ["unread-messages-count": 24]), "Du hast 24 ungelesene Nachrichten.")
     }
 
     func testLocalizationWithoutInterpolations() throws {
@@ -39,8 +39,8 @@ class LingoTests: XCTestCase {
 
     func testPluralizationFallbackWhenPluralizationRuleIsMissing() throws {
         let lingo = try Lingo(rootPath: self.localizationsRootPath, defaultLocale: "en")
-        XCTAssertEqual(lingo.localize("unread.messages", locale: "en_XX", interpolations: ["unread-messages-count": 1]), "You have an unread message.")
-        XCTAssertEqual(lingo.localize("unread.messages", locale: "en_XX", interpolations: ["unread-messages-count": 24]), "You have 24 unread messages.")
+        XCTAssertEqual(lingo.localize("unread.messages", locale: "en-XX", interpolations: ["unread-messages-count": 1]), "You have an unread message.")
+        XCTAssertEqual(lingo.localize("unread.messages", locale: "en-XX", interpolations: ["unread-messages-count": 24]), "You have 24 unread messages.")
     }
     
 }
